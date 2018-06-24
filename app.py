@@ -61,7 +61,6 @@ def signup():
         username = form.username.data
         email = form.email.data
         password = sha256_crypt.encrypt(str(form.password.data))
-        flash('You are now registered and can login', 'success')
         # create cursor
         cur = mysql.connection.cursor()
 
@@ -81,4 +80,5 @@ def signup():
 
 
 if __name__ == '__main__':
+    app.secret_key='switcher12'
     app.run(debug=True)
