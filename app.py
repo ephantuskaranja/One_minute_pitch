@@ -52,7 +52,7 @@ class SignUpForm(Form):
     ])
     confirm = PasswordField('Repeat Password')
 
-
+#user signup
 @app.route('/signup', methods=['Get', 'Post'])
 def signup():
     form = SignUpForm(request.form)
@@ -78,7 +78,7 @@ def signup():
 
     return render_template('signup.html', form=form)
 
-#user login
+#user signin
 @app.route('/signin', methods=['Get', 'Post'])
 def signin():
     if request.method == 'POST':
@@ -101,13 +101,14 @@ def signin():
             #compare the passwords
             if sha256_crypt.verify(password_candidate, password):
                 #passed
-                session['loggged-in'] = True
+                session['signed-in'] = True
                 session['username'] = username
 
                 flash ('You are now logged in', 'success')
                 return redirect(url_for('dashboard'))
             else:
                 error = 'invalid sign-in'
+                flash('wrong credentials', 'danger')
                 return render_template('signin.html', error=error)
             #Close db connection
             cur.close()
@@ -118,9 +119,17 @@ def signin():
             return render_template('signin.html', error=error)
 
     return render_template('signin.html')
+    #Dashboard 
 @app.route('/dashboard')
 def dashboard():
     return render_template('dashboard.html')
+
+app.route('/signout')
+def signout():
+    session.clear()
+    flash('You have logged out now', 'success')
+    return redirect(url_for('signin'))
+
 
 
 if __name__ == '__main__':
