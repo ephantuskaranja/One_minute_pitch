@@ -16,32 +16,78 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 mysql = MySQL(app)
 
 
+#comments class
+class CommentsForm(Form):
+    comment = TextAreaField('Category', [validators.length(min=1)])
 
-@app.route('/dashboard')
-def index():
-    #Create cursor
-    cur=mysql.connection.cursor()
-
-    #Get categories
-    result= cur.execute("SELECT * FROM categories")
-
-    categories = cur.fetchall()
-
-    if result > 0:
-        return render_template('dashboard.html', categories = categories)
-        
-    else:
-        msg = 'We have no categories stored'
-        return render_template('dashboard.html', msg=msg)
-
-    #Close connection
-    cur.close()
+#comments route
+@app.route('/add_comments', methods=['GET', 'POST'])
+def add_comments():
+    form = CommentsForm(request.form)
+    return render_template('add_comments_form.html', form= form)
 
 
 
 @app.route('/latest')
 def latest():
     return render_template('latest.html')
+
+#Pitches class
+class PitchesForm(Form):
+    pitch = StringField('Pitch', [validators.length(min=1)])
+    category = StringField('Category', [validators.length(min=1)])
+
+
+#Add pitches
+@app.route('/add_pitches', methods=['GET','Post'])
+def add_pitches():
+    form = PitchesForm(request.form)
+    if request.method == 'POST' and form.validate():
+        pitch = form.pitch.data
+        category = form.category.data
+        
+        # create cursor
+        cur = mysql.connection.cursor()
+
+        #execute Query
+        cur.execute("INSERT INTO pitches(name, category)VALUES(%s, %s)", (pitch, category))
+
+        #commit to db
+        mysql.connection.commit()
+
+        #close connection
+        cur.close()
+
+        return redirect(url_for('add_pitches')) 
+
+    return render_template('add_pitches_form.html', form=form)
+
+
+
+
+
+#Get Pitches
+@app.route('/pitches', methods=['GET'])
+def pitches():
+    if request.method == 'GET':
+
+        #Create Cursor
+        cur = mysql.connection.cursor()
+
+        #Get pitches
+        result = cur.execute("SELECT * FROM pitches")
+        pitches = cur.fetchall()
+        if result > 0:
+            return render_template('show_pitches.html', pitches = pitches)
+            
+        else:
+            msg = 'We have no pitches stored'
+            flash('No pitches found in db', 'danger')
+            return render_template('show_pitches.html', msg=msg)
+
+        #Close connection
+        cur.close()
+        
 
 
 @app.route('/most_voted')
@@ -64,7 +110,7 @@ class SignUpForm(Form):
     ])
     confirm = PasswordField('Repeat Password')
 
-#user signup
+#Register Users
 @app.route('/signup', methods=['Get', 'Post'])
 def signup():
     form = SignUpForm(request.form)
@@ -90,7 +136,7 @@ def signup():
 
     return render_template('signup.html', form=form)
 
-#user signin
+#Verify users(signin)
 @app.route('/signin', methods=['Get', 'Post'])
 def signin():
     if request.method == 'POST':
@@ -141,8 +187,6 @@ def signout():
     return redirect(url_for('signin'))
 
 
-
-
 #category Form class
 class CategoryForm(Form):
     name = StringField('Name', [validators.length(min=1)])
@@ -171,6 +215,29 @@ def add_categories():
 
         return redirect(url_for('add_categories'))
     return render_template('add_categories_form.html', form=form)
+
+
+#Get Categories
+@app.route('/dashboard')
+def index():
+    #Create cursor
+    cur=mysql.connection.cursor()
+
+    #Get categories
+    result= cur.execute("SELECT * FROM categories")
+
+    categories = cur.fetchall()
+
+    if result > 0:
+        return render_template('dashboard.html', categories = categories)
+        
+    else:
+        msg = 'We have no categories stored'
+        return render_template('dashboard.html', msg=msg)
+
+    #Close connection
+    cur.close()
+
 
 
 if __name__ == '__main__':
