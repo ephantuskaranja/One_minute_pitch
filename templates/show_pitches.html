@@ -1,5 +1,19 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-    show pitches here
+    <h1>dashboard:Pitches</h1>
+    <h3>Welcome {{ session.username }}</h3>
+    <hr>
+    <table class="table table-striped">
+        <tr>
+            <th>Pitch</th>
+            <th>Category</th> 
+        </tr>
+        {% for pitches in pitches %}
+            <tr>
+                <td>{{ pitches.name }}</td>
+                <td>{{ pitches.category }}</td> 
+            </tr>
+        {% endfor %}
+    </table>   
 {% endblock %}

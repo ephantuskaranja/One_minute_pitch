@@ -5,8 +5,9 @@
 {% from 'includes/_formhelpers.html' import render_field %}
 <form action= "" method="POST">
 <div class="form-group">
-    <label>Pitch</label>
-    {{render_field(form.name, class="form-control")}}
+    {{render_field(form.pitch, class="form-control")}}
+
+    {{render_field(form.category, class="form-control")}}
 </div>
 
 <p><input class="btn btn-primary" type="submit" value="submit"></p>
