@@ -17,14 +17,9 @@ mysql = MySQL(app)
 
 
 
-@app.route('/')
+@app.route('/dashboard')
 def index():
-    return render_template('home.html')
-
-
-@app.route('/pitches')
-def pitches():
-    return render_template('pitches.html')
+   
 
 
 @app.route('/latest')
@@ -119,12 +114,10 @@ def signin():
             return render_template('signin.html', error=error)
 
     return render_template('signin.html')
-    #Dashboard 
-@app.route('/dashboard')
-def dashboard():
-    return render_template('dashboard.html')
+    
 
-app.route('/signout')
+
+@app.route('/signout')
 def signout():
     session.clear()
     flash('You have logged out now', 'success')
@@ -132,6 +125,38 @@ def signout():
 
 
 
+
+#category Form class
+class CategoryForm(Form):
+    name = StringField('Name', [validators.length(min=1)])
+
+
+#add category
+@app.route('/add_categories', methods=['GET', 'POST'])
+def add_categories():
+    form= CategoryForm(request.form)
+    if request.method == 'POST' and form.validate():
+        name = form.name.data
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        #Execute
+        cur.execute("INSERT INTO categories(name) VALUES(%s)",[name])
+
+        #Commit to db
+        mysql.connection.commit()
+
+        #close db connection
+        cur.close()
+
+        flash('categories added to db', 'success')
+
+        return redirect(url_for('add_categories'))
+    return render_template('add_categories_form.html', form=form)
+
+
 if __name__ == '__main__':
     app.secret_key='switcher12'
     app.run(debug=True)
+
