@@ -19,7 +19,24 @@ mysql = MySQL(app)
 
 @app.route('/dashboard')
 def index():
-   
+    #Create cursor
+    cur=mysql.connection.cursor()
+
+    #Get categories
+    result= cur.execute("SELECT * FROM categories")
+
+    categories = cur.fetchall()
+
+    if result > 0:
+        return render_template('dashboard.html', categories = categories)
+        
+    else:
+        msg = 'We have no categories stored'
+        return render_template('dashboard.html', msg=msg)
+
+    #Close connection
+    cur.close()
+
 
 
 @app.route('/latest')

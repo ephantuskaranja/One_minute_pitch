@@ -3,4 +3,17 @@
 {% block body %}
     <h1>dashboard.</h1>
     <h3>Welcome {{ session.username }}</h3>
+    <hr>
+    <table class="table table-striped">
+        <tr>
+            <th>Category</th>
+            <th>Date Created</th> 
+        </tr>
+        {% for categories in categories %}
+            <tr>
+                <td>{{ categories.name }}</td>
+                <td>{{ categories.created_at }}</td> 
+            </tr>
+        {% endfor %}
+    </table>   
 {% endblock%}
