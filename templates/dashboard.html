@@ -11,7 +11,7 @@
         </tr>
         {% for categories in categories %}
             <tr>
-                <td>{{ categories.name }}</td>
+                <td><a href="/pitches">{{ categories.name }}</a></td>
                 <td>{{ categories.created_at }}</td> 
             </tr>
         {% endfor %}
