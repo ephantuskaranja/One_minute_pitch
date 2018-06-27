@@ -18,12 +18,29 @@ mysql = MySQL(app)
 
 #comments class
 class CommentsForm(Form):
-    comment = TextAreaField('Category', [validators.length(min=1)])
+    comment = TextAreaField('Comment', [validators.length(min=1)])
 
 #comments route
 @app.route('/add_comments', methods=['GET', 'POST'])
 def add_comments():
     form = CommentsForm(request.form)
+    if request.method == 'POST' and form.validate():
+        comment = form.comment.data
+        
+        
+        # create cursor
+        cur = mysql.connection.cursor()
+
+        #execute Query
+        cur.execute("INSERT INTO comments(comment)VALUES(%s)", [comment])
+
+        #commit to db
+        mysql.connection.commit()
+
+        #close connection
+        cur.close()
+
+        return redirect(url_for('add_comments')) 
     return render_template('add_comments_form.html', form= form)
 
 
