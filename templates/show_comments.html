@@ -1,18 +1,18 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-    <h1>dashboard:Pitches</h1>
+    <h1>dashboard:Comments</h1>
     <h3>Welcome {{ session.username }}</h3>
     <hr>
     <table class="table table-striped">
         <tr>
-            <th>Pitch</th>
-            <th>Category</th> 
+            <th>Comment</th>
+            <th>Author</th> 
         </tr>
-        {% for pitches in pitches %}
+        {% for comments in comments %}
             <tr>
-                <td><a href="/show_comments">{{ pitches.name }}</a></td>
-                <td>{{ pitches.category }}</td> 
+                <td>{{ comments.comment }}</td>
+                <td>{{ comments.posted_by }}</td> 
             </tr>
         {% endfor %}
     </table>   

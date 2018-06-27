@@ -44,6 +44,28 @@ def add_comments():
     return render_template('add_comments_form.html', form= form)
 
 
+#Get Comments
+@app.route('/show_comments', methods=['GET'])
+def show_comments():
+    if request.method == 'GET':
+
+        #Create Cursor
+        cur = mysql.connection.cursor()
+
+        #Get pcomments
+        result = cur.execute("SELECT * FROM comments")
+        comments = cur.fetchall()
+        if result > 0:
+            return render_template('show_comments.html', comments = comments)
+            
+        else:
+            msg = 'We have no comments stored'
+            flash('No comments found in db', 'danger')
+            return render_template('show_comments.html', msg=msg)
+
+        #Close connection
+        cur.close()
+
 
 @app.route('/latest')
 def latest():
