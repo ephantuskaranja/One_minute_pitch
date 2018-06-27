@@ -1,19 +1,23 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-    <h1>dashboard.</h1>
+    <h1>dashboard:categories</h1>
     <h3>Welcome {{ session.username }}</h3>
     <hr>
     <table class="table table-striped">
         <tr>
+            <th>Id</th>
             <th>Category</th>
-            <th>Date Created</th> 
+            <th>Add Pitch</th>
+
         </tr>
         {% for categories in categories %}
             <tr>
-                <td><a href="/pitches">{{ categories.name }}</a></td>
-                <td>{{ categories.created_at }}</td> 
+                <td>{{ categories.id }}</td> 
+                <td>{{ categories.name }}</td>
+                <td><a href="/add_pitches/{{categories.id}}" class="btn btn-default pullright">Add Pitch</a></td>
             </tr>
+            
         {% endfor %}
     </table>   
 {% endblock%}

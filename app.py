@@ -74,30 +74,31 @@ def latest():
 #Pitches class
 class PitchesForm(Form):
     pitch = StringField('Pitch', [validators.length(min=1)])
-    category = StringField('Category', [validators.length(min=1)])
+    category_id = StringField('Category_id', [validators.length(min=1)])
 
 
 #Add pitches
-@app.route('/add_pitches', methods=['GET','Post'])
-def add_pitches():
+@app.route('/add_pitches/<int:id>', methods=['GET','Post'])
+def add_pitches(id):
     form = PitchesForm(request.form)
-    if request.method == 'POST' and form.validate():
+
+    if request.method == 'POST':
         pitch = form.pitch.data
-        category = form.category.data
+        category_id= id
         
         # create cursor
         cur = mysql.connection.cursor()
 
         #execute Query
-        cur.execute("INSERT INTO pitches(name, category)VALUES(%s, %s)", (pitch, category))
+        cur.execute("INSERT INTO pitches(name,category_id) VALUES(%s, %s)", (pitch, category_id))
 
-        #commit to db
+        #commit to db]
         mysql.connection.commit()
 
         #close connection
         cur.close()
 
-        return redirect(url_for('add_pitches')) 
+        return redirect(url_for('index')) 
 
     return render_template('add_pitches_form.html', form=form)
 
@@ -106,7 +107,7 @@ def add_pitches():
 
 
 #Get Pitches
-@app.route('/pitches', methods=['GET'])
+@app.route('/pitches/<id>', methods=['GET'])
 def pitches():
     if request.method == 'GET':
 
@@ -116,6 +117,7 @@ def pitches():
         #Get pitches
         result = cur.execute("SELECT * FROM pitches")
         pitches = cur.fetchall()
+        
         if result > 0:
             return render_template('show_pitches.html', pitches = pitches)
             
@@ -171,7 +173,7 @@ def signup():
         cur.close()
 
         flash('You are now registered!Thankyou. You can log in now', 'success')
-        return redirect(url_for('index')) 
+        return redirect(url_for('signin')) 
 
     return render_template('signup.html', form=form)
 
@@ -202,7 +204,7 @@ def signin():
                 session['username'] = username
 
                 flash ('You are now logged in', 'success')
-                return redirect(url_for('dashboard'))
+                return redirect(url_for('signin'))
             else:
                 error = 'invalid sign-in'
                 flash('wrong credentials', 'danger')
@@ -277,6 +279,28 @@ def index():
     #Close connection
     cur.close()
 
+
+
+
+@app.route('/dashboard/<category_id>')
+def category_id(category_id):
+    #Create cursor
+    cur=mysql.connection.cursor()
+
+    #Get categories
+    result= cur.execute("SELECT * FROM categories WHERE ")
+
+    categories = cur.fetchall()
+
+    if result > 0:
+        return render_template('dashboard.html', categories = categories)
+        
+    else:
+        msg = 'We have no categories stored'
+        return render_template('dashboard.html', msg=msg)
+
+    #Close connection
+    cur.close()
 
 
 if __name__ == '__main__':
