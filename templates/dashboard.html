@@ -11,11 +11,11 @@
             <th>Add Pitch</th>
 
         </tr>
-        {% for categories in categories %}
+        {% for category in categories %}
             <tr>
-                <td>{{ categories.id }}</td> 
-                <td>{{ categories.name }}</td>
-                <td><a href="/add_pitches/{{categories.id}}" class="btn btn-default pullright">Add Pitch</a></td>
+                <td>{{ category.id }}</td> 
+                <td><a href="/filter_pitches/{{category.id}}" >{{category.name }}</a></td>
+                <td><a href="/add_pitches/{{category.id}}" class="btn btn-default pullright">Add Pitch</a></td>
             </tr>
             
         {% endfor %}

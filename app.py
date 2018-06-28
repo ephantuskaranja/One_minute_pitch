@@ -85,14 +85,14 @@ def add_pitches(id):
 
     if request.method == 'POST':
         pitch = form.pitch.data
-        category_id= id
+        # id = category_id
         
         # create cursor
         cur = mysql.connection.cursor()
 
         #execute Query
-        cur.execute("INSERT INTO pitches(name,category_id) VALUES(%s, %s)", (pitch, category_id))
-
+        cur.execute("INSERT INTO pitches (name, category_id) VALUES(%s, %s)", (pitch, id))
+        # result = cur.execute("SELECT * FROM pitches WHERE category_id=%s "% (my_id))
         #commit to db]
         mysql.connection.commit()
 
@@ -108,7 +108,7 @@ def add_pitches(id):
 
 
 #Get Pitches
-@app.route('/pitches', methods=['GET'])
+@app.route('/pitches/', methods=['GET'])
 def pitches():
     if request.method == 'GET':
 
@@ -130,6 +130,29 @@ def pitches():
         #Close connection
         cur.close()
         
+
+@app.route('/filter_pitches/<int:my_id>', methods=['GET'])
+def filter_pitches(my_id):
+    if request.method == 'GET':
+        #Create Cursor
+        cur = mysql.connection.cursor()
+         
+        #Get pitches--
+        result = cur.execute("SELECT * FROM pitches WHERE category_id=%s "% (my_id))
+        
+        pitches = cur.fetchall()
+        
+        if result > 0:
+            return render_template('filter_pitches.html', pitches = pitches)
+            
+        else:
+            msg = 'We have no pitches stored'
+            flash('No pitches found in db', 'danger')
+            return render_template('filter_pitches.html', msg=msg)
+
+        #Close connection
+        cur.close()
+
 
 
 @app.route('/most_voted')

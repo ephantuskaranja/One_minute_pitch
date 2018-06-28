@@ -1,0 +1,7 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+    {% for pitch in pitches %}
+       {{pitch.name}}
+    {% endfor %}
+{% endblock %}
