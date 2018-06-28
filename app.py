@@ -20,19 +20,20 @@ mysql = MySQL(app)
 class CommentsForm(Form):
     comment = TextAreaField('Comment', [validators.length(min=1)])
 
-#comments route
-@app.route('/add_comments', methods=['GET', 'POST'])
-def add_comments():
+#Add comments 
+@app.route('/add_comments/<int:id>', methods=['GET', 'POST'])
+def add_comments(id):
     form = CommentsForm(request.form)
     if request.method == 'POST' and form.validate():
         comment = form.comment.data
+        pitch_id = id
         
         
         # create cursor
         cur = mysql.connection.cursor()
 
         #execute Query
-        cur.execute("INSERT INTO comments(comment)VALUES(%s)", [comment])
+        cur.execute("INSERT INTO comments(comment,pitch_id)VALUES(%s, %s)", (comment, pitch_id))
 
         #commit to db
         mysql.connection.commit()
@@ -40,7 +41,7 @@ def add_comments():
         #close connection
         cur.close()
 
-        return redirect(url_for('add_comments')) 
+        return redirect(url_for('show_comments')) 
     return render_template('add_comments_form.html', form= form)
 
 
@@ -74,7 +75,7 @@ def latest():
 #Pitches class
 class PitchesForm(Form):
     pitch = StringField('Pitch', [validators.length(min=1)])
-    category_id = StringField('Category_id', [validators.length(min=1)])
+    # category_id = StringField('Category_id', [validators.length(min=1)])
 
 
 #Add pitches
@@ -107,7 +108,7 @@ def add_pitches(id):
 
 
 #Get Pitches
-@app.route('/pitches/<id>', methods=['GET'])
+@app.route('/pitches', methods=['GET'])
 def pitches():
     if request.method == 'GET':
 
