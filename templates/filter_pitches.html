@@ -1,7 +1,18 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-    {% for pitch in pitches %}
-       {{pitch.name}}
+    <hr>
+       <table class="table table-striped">
+           <tr>
+               <th>Pitch</th>
+               <th>Author</th> 
+           </tr>
+           {% for pitch in pitches %}
+           <tr>
+                <td>{{pitch.name}}</td>
+                <td>{{ pitch.posted_by }}</td> 
+            </tr>
+       
     {% endfor %}
+    </table>
 {% endblock %}

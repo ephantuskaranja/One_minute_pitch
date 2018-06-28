@@ -82,27 +82,25 @@ class PitchesForm(Form):
 @app.route('/add_pitches/<int:id>', methods=['GET','Post'])
 def add_pitches(id):
     form = PitchesForm(request.form)
-
+    category_id=id
     if request.method == 'POST':
         pitch = form.pitch.data
-        # id = category_id
         
         # create cursor
         cur = mysql.connection.cursor()
 
         #execute Query
-        cur.execute("INSERT INTO pitches (name, category_id) VALUES(%s, %s)", (pitch, id))
-        # result = cur.execute("SELECT * FROM pitches WHERE category_id=%s "% (my_id))
+        cur.execute('INSERT INTO pitches(name, category_id) VALUES(%s,%s)',(pitch, category_id))
+        
         #commit to db]
         mysql.connection.commit()
 
         #close connection
         cur.close()
 
-        return redirect(url_for('index')) 
+        return redirect(url_for('pitches')) 
 
     return render_template('add_pitches_form.html', form=form)
-
 
 
 
